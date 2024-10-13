@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        /* Moving Background */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(120deg, #89f7fe, #66a6ff);
+            background-size: 200% 200%;
+            animation: backgroundMove 10s ease-in-out infinite;
+            color: #333;
+        }
+
+        @keyframes backgroundMove {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Centering Content */
+        .container {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Typewriter Effect for the Heading */
+        h1 {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #333;
+            border-right: .15em solid orange;
+            white-space: nowrap;
+            overflow: hidden;
+            width: 0;
+            animation: typing 3.5s steps(30, end), blink-caret 0.75s step-end infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        @keyframes blink-caret {
+
+            from,
+            to {
+                border-color: transparent;
+            }
+
+            50% {
+                border-color: orange;
+            }
+        }
+
+        /* Form Styling */
+        form {
+            margin-top: 20px;
+        }
+
+        input[type="url"] {
+            padding: 10px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            background-color: #66a6ff;
+            color: white;
+            font-size: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #89f7fe;
+        }
+
+        /* Shortened URL Result */
+        #result {
+            margin-top: 20px;
+        }
+
+        #shortenedLink {
+            font-weight: bold;
+            color: #ff6600;
+            text-decoration: none;
+        }
+
+        #shortenedLink:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <form id="shortenForm">
+            <label for="url">Enter URL:</label>
+            <input type="url" id="url" name="url" placeholder="https://example.com" required>
+            <button type="submit">Shorten</button>
+        </form>
+
+        <div id="result" style="display: none;">
+            <p>Shortened URL:</p>
+            <a href="#" id="shortenedLink" target="_blank"></a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('shortenForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevents page from reloading on form submit
+            const url = document.getElementById('url').value;
+
+            // Send the URL to the backend via a POST request
+            fetch('/shorten', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ original_url: url })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Display the shortened URL
+                    if (data.short_url) {
+                        const resultDiv = document.getElementById('result');
+                        const shortenedLink = document.getElementById('shortenedLink');
+                        shortenedLink.href = data.short_url;
+                        shortenedLink.textContent = data.short_url;
+                        resultDiv.style.display = 'block';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+
+</html>
