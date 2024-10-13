@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // create db connection
 const db = mysql.createConnection({
-    host: 'mysql',
+    host: 'localhost',
     user: 'root',
     password: 'password',
     database: 'url_shortener_db'
