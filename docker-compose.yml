@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0  
+    container_name: url-shortener-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: password  
+      MYSQL_DATABASE: url_shortener_db    
+    ports:
+      - "3306:3306" 
+    volumes:
+      - ./mysql_data:/var/lib/mysql  # Persist MySQL data on host machine
+      - ./mysql-init:/docker-entrypoint-initdb.d # Initialize DB with table on container start
+    networks:
+      - urlshortener-net
+
+networks:
+  urlshortener-net:
+    driver: bridge
